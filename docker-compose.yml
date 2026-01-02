@@ -4,10 +4,12 @@ services:
     container_name: sakila-mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sakila
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - ./db:/var/lib/mysql
+      - ./sakila_sql:/docker-entrypoint-initdb.d
 
   adminer:
     image: adminer
