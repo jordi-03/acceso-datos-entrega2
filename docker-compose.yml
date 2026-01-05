@@ -8,8 +8,13 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - ./db:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
       - ./sakila_sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
 
   adminer:
     image: adminer
@@ -18,3 +23,17 @@ services:
       - "8080:8080"
     depends_on:
       - mysql
+
+  api:
+    build: .
+    container_name: sakila-api
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql_data:
