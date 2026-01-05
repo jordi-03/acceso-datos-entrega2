@@ -52,7 +52,7 @@ def get_customer(customerId: int, db: Session = Depends(get_db)):
 
 @router.put("/customers/{customerId}")
 def update_customer(customerId: int, payload: CustomerUpdate, db: Session = Depends(get_db)):
-    # comprobar que existe
+
     exists_q = text("SELECT customer_id FROM customer WHERE customer_id = :id")
     exists = db.execute(exists_q, {"id": customerId}).first()
     if not exists:
@@ -78,8 +78,7 @@ def update_customer(customerId: int, payload: CustomerUpdate, db: Session = Depe
 
 @router.delete("/customers/{customerId}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_customer(customerId: int, db: Session = Depends(get_db)):
-    # si tiene rentals, MySQL puede impedir borrado por FK dependiendo del esquema:
-    # nosotros devolvemos 409 si falla.
+
     try:
         q = text("DELETE FROM customer WHERE customer_id = :id")
         res = db.execute(q, {"id": customerId})

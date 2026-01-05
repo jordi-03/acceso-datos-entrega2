@@ -10,7 +10,7 @@ router = APIRouter(tags=["rentals"])
 
 @router.post("/rentals", status_code=status.HTTP_201_CREATED)
 def create_rental(payload: RentalCreate, db: Session = Depends(get_db)):
-    # En sakila: rental(rental_date, inventory_id, customer_id, return_date, staff_id, last_update)
+
     q = text("""
         INSERT INTO rental (rental_date, inventory_id, customer_id, return_date, staff_id, last_update)
         VALUES (NOW(), :inventory_id, :customer_id, NULL, :staff_id, NOW())
@@ -52,7 +52,7 @@ def get_rental(rentalId: int, db: Session = Depends(get_db)):
 
 @router.put("/rentals/{rentalId}/return")
 def return_rental(rentalId: int, db: Session = Depends(get_db)):
-    # Debe existir y no estar devuelto
+  
     q_check = text("SELECT return_date FROM rental WHERE rental_id = :id")
     row = db.execute(q_check, {"id": rentalId}).mappings().first()
     if not row:
@@ -77,7 +77,6 @@ def rentals_by_customer(customerId: int, limit: int = 10, offset: int = 0, db: S
     if offset < 0:
         raise HTTPException(status_code=422, detail="offset must be >= 0")
 
-    # comprobar cliente
     c = db.execute(text("SELECT customer_id FROM customer WHERE customer_id = :id"), {"id": customerId}).first()
     if not c:
         raise HTTPException(status_code=404, detail="customer not found")

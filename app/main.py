@@ -5,7 +5,6 @@ from app.routers import customers, rentals
 
 app = FastAPI(title="Sakila API", version="1.0.0")
 
-# CORS (para que Swagger "Try it out" funcione sin problemas)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
